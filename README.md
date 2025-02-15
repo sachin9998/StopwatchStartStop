@@ -1,8 +1,96 @@
-# React + Vite
+# React Machine Coding - Stopwatch with Start Stop Button
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/7ff42a05-c343-446a-a16e-243279b8aef2">
+</div>
 
-Currently, two official plugins are available:
+**Logic:**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Manage state time to increase count on starting the stopwatch.
+- use Set-interval method to increase time.
+- Format the current time with logic to convert it into hour, minute and seconds.
+
+**To Convert Seconds into Hour, Minute & Seconds**
+
+---
+
+```jsx
+  const formatTime = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(
+      2,
+      "0"
+    )}:${String(secs).padStart(2, "0")}`;
+  };
+```
+
+**Code:**
+
+```jsx
+import React, { useEffect, useState } from "react";
+
+const Stopwatch = () => {
+  const [time, setTime] = useState(0); // In Seconds
+  const [isRunning, setIsRunning] = useState(false);
+
+  const formatTime = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(
+      2,
+      "0"
+    )}:${String(secs).padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    let timer;
+    if (isRunning) {
+      timer = setInterval(() => {
+        setTime((count) => count + 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [isRunning, time]);
+
+  const handleStartStop = () => {
+    setIsRunning((prev) => !prev);
+  };
+
+  const handleReset = () => {
+    setTime(0);
+  };
+
+  return (
+    <div className="bg-white shadow-xl rounded-xl p-8 w-96 text-center">
+      <h1 className="text-3xl font-semibold text-gray-800 mb-6">
+        Countdown Timer
+      </h1>
+
+      <div className="flex justify-center items-center gap-4 mb-6">
+        <p className="text-4xl">{formatTime(time)}</p>
+      </div>
+
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={handleStartStop}
+          className="bg-blue-600 text-white px-6 py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 transition"
+        >
+          {isRunning ? "Stop" : "Start"}
+        </button>
+        <button
+          onClick={handleReset}
+          className="bg-red-500 text-white px-6 py-2 rounded-lg text-lg font-semibold hover:bg-red-600 transition"
+        >
+          Reset
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Stopwatch;
+```
